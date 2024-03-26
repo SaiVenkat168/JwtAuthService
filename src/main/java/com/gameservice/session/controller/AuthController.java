@@ -1,7 +1,11 @@
 package com.gameservice.session.controller;
 
 
-import com.gameservice.session.bao.*;
+import com.gameservice.session.bao.JwtRequest;
+import com.gameservice.session.bao.JwtResponse;
+import com.gameservice.session.bao.UserRequest;
+import com.gameservice.session.entity.Users;
+import com.gameservice.session.service.UserService;
 import com.gameservice.session.util.JwtHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,8 @@ public class AuthController {
     @Autowired
     private AuthenticationManager manager;
 
+    @Autowired
+    private UserService service;
 
     @Autowired
     private JwtHelper helper;
@@ -45,6 +51,13 @@ public class AuthController {
                 .jwtToken(token)
                 .username(userDetails.getUsername()).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody UserRequest request)
+    {
+        service.register(request);
+        return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 
     private void doAuthenticate(String email, String password) {
